@@ -1,0 +1,10 @@
+C:\Users\Ian\source\repos\DNS\Testing\bin\Release\Testing.exe.config
+C:\Users\Ian\source\repos\DNS\Testing\bin\Release\Testing.exe
+C:\Users\Ian\source\repos\DNS\Testing\bin\Release\Testing.pdb
+C:\Users\Ian\source\repos\DNS\Testing\bin\Release\DNS.dll
+C:\Users\Ian\source\repos\DNS\Testing\bin\Release\DNS.pdb
+C:\Users\Ian\source\repos\DNS\Testing\obj\Release\Testing.csprojResolveAssemblyReference.cache
+C:\Users\Ian\source\repos\DNS\Testing\obj\Release\Testing.csproj.CoreCompileInputs.cache
+C:\Users\Ian\source\repos\DNS\Testing\obj\Release\Testing.csproj.CopyComplete
+C:\Users\Ian\source\repos\DNS\Testing\obj\Release\Testing.exe
+C:\Users\Ian\source\repos\DNS\Testing\obj\Release\Testing.pdb

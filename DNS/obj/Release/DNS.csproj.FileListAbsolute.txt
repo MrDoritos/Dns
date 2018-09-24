@@ -1,0 +1,5 @@
+C:\Users\Ian\source\repos\DNS\DNS\bin\Release\DNS.dll
+C:\Users\Ian\source\repos\DNS\DNS\bin\Release\DNS.pdb
+C:\Users\Ian\source\repos\DNS\DNS\obj\Release\DNS.csproj.CoreCompileInputs.cache
+C:\Users\Ian\source\repos\DNS\DNS\obj\Release\DNS.dll
+C:\Users\Ian\source\repos\DNS\DNS\obj\Release\DNS.pdb

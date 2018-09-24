@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNS", "DNS\DNS.csproj", "{8A1493E0-E697-4376-8821-2DFD79E616B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{8B5DA36D-9A31-4E05-99CE-9279A8EC108E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8A1493E0-E697-4376-8821-2DFD79E616B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A1493E0-E697-4376-8821-2DFD79E616B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A1493E0-E697-4376-8821-2DFD79E616B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A1493E0-E697-4376-8821-2DFD79E616B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B5DA36D-9A31-4E05-99CE-9279A8EC108E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B5DA36D-9A31-4E05-99CE-9279A8EC108E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B5DA36D-9A31-4E05-99CE-9279A8EC108E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B5DA36D-9A31-4E05-99CE-9279A8EC108E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4784E162-309A-4432-99EF-D5B64FC74679}
+	EndGlobalSection
+EndGlobal
