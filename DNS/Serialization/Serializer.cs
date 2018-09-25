@@ -40,32 +40,32 @@ namespace DNS.Serialization
         public static byte[] GetHeader(Header header)
         {
             byte[] hdr = new byte[12];
-            hdr[0] = (byte)(header.Id << 8);
+            hdr[0] = (byte)(header.Id >> 8);
             hdr[1] = (byte)(header.Id);
             byte[] rc = GetReplyCode(header);
             hdr[2] = rc[0];
             hdr[3] = rc[1];
-            hdr[4] = (byte)(header.QuestionCount << 8);
+            hdr[4] = (byte)(header.QuestionCount >> 8);
             hdr[5] = (byte)(header.QuestionCount);
-            hdr[6] = (byte)(header.AnswerCount << 8);
+            hdr[6] = (byte)(header.AnswerCount >> 8);
             hdr[7] = (byte)(header.AnswerCount);
             hdr[8] = (byte)(header.AuthorityCount);
-            hdr[9] = (byte)(header.AuthorityCount << 8);
+            hdr[9] = (byte)(header.AuthorityCount >> 8);
             hdr[10] = (byte)(header.AdditionalCount);
-            hdr[11] = (byte)(header.AdditionalCount << 8);
+            hdr[11] = (byte)(header.AdditionalCount >> 8);
             return hdr;
         }
 
         public static byte[] GetReplyCode(ReplyCode rc)
         {
             byte[] rply = new byte[2];
-            rply[0] |= GetBool(rc.IsQuery);
-            rply[0] |= (byte)((int)(rc.OpCode) << 1);
-            rply[0] |= (byte)(GetBool(rc.AuthoritativeAnswer) << 5);
-            rply[0] |= (byte)(GetBool(rc.Truncation) << 6);
-            rply[0] |= (byte)(GetBool(rc.RecursionDesired) << 7);
-            rply[1] |= (byte)(GetBool(rc.RecursionAvailable));
-            rply[1] |= (byte)(((int)rc.ResponseCode) << 5);
+            rply[0] |= (byte)(GetBool(!rc.IsQuery) << 7);
+            rply[0] |= (byte)((byte)((int)(rc.OpCode)) << 3);
+            rply[0] |= (byte)(GetBool(rc.AuthoritativeAnswer) << 2);
+            rply[0] |= (byte)(GetBool(rc.Truncation) << 1);
+            rply[0] |= (byte)(GetBool(rc.RecursionDesired));
+            rply[1] |= (byte)(GetBool(rc.RecursionAvailable) << 7);
+            rply[1] |= (byte)(((int)rc.ResponseCode));
             return rply;
         }
 

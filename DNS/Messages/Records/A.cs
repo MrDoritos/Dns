@@ -9,7 +9,13 @@ namespace DNS.Messages.Records
 {
     public class A : BaseRecord, IRecord
     {
-        public A(byte[] record) :base (Classes.IN, Types.A) { Record = record; }
+        public A(byte[] record) :base (Classes.IN, Types.A) { Record = record; TTL = 500; }
+        /// <summary>
+        /// Create an A record
+        /// </summary>
+        /// <param name="record">The 4 byte record</param>
+        /// <param name="TTL">The time to live</param>
+        public A(byte[] record, uint TTL):base(Classes.IN, Types.A) { Record = record; this.TTL = TTL; }
         public uint TTL { get; set; }
         public byte[] Record { get; }
 

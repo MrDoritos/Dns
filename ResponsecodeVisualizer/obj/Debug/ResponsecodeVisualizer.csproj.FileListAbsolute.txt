@@ -1,0 +1,10 @@
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\bin\Debug\ResponsecodeVisualizer.exe.config
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\bin\Debug\ResponsecodeVisualizer.exe
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\bin\Debug\ResponsecodeVisualizer.pdb
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\bin\Debug\DNS.dll
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\bin\Debug\DNS.pdb
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\obj\Debug\ResponsecodeVisualizer.csprojResolveAssemblyReference.cache
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\obj\Debug\ResponsecodeVisualizer.csproj.CoreCompileInputs.cache
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\obj\Debug\ResponsecodeVisualizer.csproj.CopyComplete
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\obj\Debug\ResponsecodeVisualizer.exe
+C:\Users\Ian\source\repos\DNS\ResponsecodeVisualizer\obj\Debug\ResponsecodeVisualizer.pdb

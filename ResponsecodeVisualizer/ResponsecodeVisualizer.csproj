@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8A1493E0-E697-4376-8821-2DFD79E616B3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DNS</RootNamespace>
-    <AssemblyName>DNS</AssemblyName>
+    <ProjectGuid>{445471E8-40E1-4625-82EA-D669651DA3C0}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ResponsecodeVisualizer</RootNamespace>
+    <AssemblyName>ResponsecodeVisualizer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,28 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Deserialization\Components\Question.cs" />
-    <Compile Include="Deserialization\Header\Parser.cs" />
-    <Compile Include="Deserialization\Header\ReplyCode\Parser.cs" />
-    <Compile Include="Deserialization\Parser.cs" />
-    <Compile Include="Dns.cs" />
-    <Compile Include="DomainHandler.cs" />
-    <Compile Include="Messages\Components\Answer.cs" />
-    <Compile Include="Messages\Components\Domain.cs" />
-    <Compile Include="Messages\Components\Header.cs" />
-    <Compile Include="Messages\Components\IRecord.cs" />
-    <Compile Include="Messages\Components\ISerializable.cs" />
-    <Compile Include="Messages\Components\Question.cs" />
-    <Compile Include="Messages\Components\BaseRecord.cs" />
-    <Compile Include="Messages\Components\Record.cs" />
-    <Compile Include="Messages\Components\ReplyCode.cs" />
-    <Compile Include="Messages\DnsMessage.cs" />
-    <Compile Include="Messages\HeaderBuilder.cs" />
-    <Compile Include="Messages\Records\A.cs" />
-    <Compile Include="Messages\ReplyCodeBuilder.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\Serializer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DNS\DNS.csproj">
+      <Project>{8a1493e0-e697-4376-8821-2dfd79e616b3}</Project>
+      <Name>DNS</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
