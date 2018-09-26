@@ -47,9 +47,11 @@
     <Compile Include="Dns.cs" />
     <Compile Include="DomainHandler.cs" />
     <Compile Include="Messages\Components\Answer.cs" />
+    <Compile Include="Messages\Components\BaseOfBaseRecord.cs" />
     <Compile Include="Messages\Components\Domain.cs" />
     <Compile Include="Messages\Components\Header.cs" />
     <Compile Include="Messages\Components\IRecord.cs" />
+    <Compile Include="Messages\Components\IRecordRetriever.cs" />
     <Compile Include="Messages\Components\ISerializable.cs" />
     <Compile Include="Messages\Components\Question.cs" />
     <Compile Include="Messages\Components\BaseRecord.cs" />
@@ -58,6 +60,8 @@
     <Compile Include="Messages\DnsMessage.cs" />
     <Compile Include="Messages\HeaderBuilder.cs" />
     <Compile Include="Messages\Records\A.cs" />
+    <Compile Include="Messages\Records\AAAA.cs" />
+    <Compile Include="Messages\Records\CNAME.cs" />
     <Compile Include="Messages\ReplyCodeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\Serializer.cs" />

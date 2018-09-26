@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace DNS.Messages.Components
 {
-    public interface IRecord : ISerializable
+    public interface IRecordRetriever
     {
-        BaseRecord.Types Type();
-        byte[] Bytes { get; }
+        Domain RetrieveSubDomain(byte[] vs);
     }
 }

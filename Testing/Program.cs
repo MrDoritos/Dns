@@ -39,13 +39,15 @@ namespace Testing
             Domain gateway = discord.AddSubdomain(new Domain("gateway"));
             gateway.A_Records.Add(new DNS.Messages.Records.A(new byte[] { 104, 16, 60, 37 }, 60));
             Iansweb.A_Records.Add(new DNS.Messages.Records.A(new byte[] { 192, 168, 1, 7 }, 60));
+            Iansweb.AAAA_Records.Add(new DNS.Messages.Records.AAAA(new byte[] { 0x2a, 0x02, 0x81, 0x0b, 0xc5, 0x40, 0x38, 0x57, 0x98, 0x27, 0xb3, 0xad, 0xd2, 0xa5, 0x5f, 0xef }));
+            //Iansweb.CNAME_Records.Add(new DNS.Messages.Records.CNAME(new byte[2][] { new byte[] { 66, 66, 66 }, new byte[] { 66, 66, 66 } }));
             discordapp.A_Records.Add(new DNS.Messages.Records.A(new byte[] { 104, 16, 58, 5 }, 60));
             org.AddSubdomain(new Domain("bob")).AddSubdomain(new Domain("test")).A_Records.Add(new DNS.Messages.Records.A(new byte[] { 100, 100, 100, 100 }));
             org.AddSubdomain(new Domain("hmm"));
             //Console.WriteLine("Press any key to start benchmark...");
             udpSock.Bind(new IPEndPoint(IPAddress.Any, 53));
             //udpSock.Bind(new IPEndPoint(new IPAddress(new byte[] { 127, 0, 0, 1 }), 53));
-
+            //WaterFaller();
             new Thread(UIThread).Start();
             while (true)
             {
@@ -55,6 +57,20 @@ namespace Testing
                 //Console.WriteLine(b);
                 //Benchmark(1);
                 //Console.WriteLine(Parser.Parse(Recieve()).ToString());
+            }
+        }
+
+        static void WaterFaller()
+        {
+            for (int i = 1; i < 100000; i+=1)
+            {
+
+                TimeSpan[] timeSpans = new TimeSpan[i];
+                for (int d = 0; d < i; d++)
+                    timeSpans[d] = DateTime.Now.AddTicks(d).Subtract(DateTime.Now);
+
+                ShowWaterfall(DateTime.Now, DateTime.Now.AddTicks(i + 1), timeSpans.Select(n => new KeyValuePair<string, TimeSpan>("", n)).ToArray());
+                Console.ReadKey(true);
             }
         }
 
@@ -86,16 +102,20 @@ namespace Testing
                                             for (int d = 0; d < domainname[aaa].Length; d++)
                                                 ss[aaa][d] = (byte)domainname[aaa][d];
                                         }
-                                        for (int s = 0; current == null &&  s < ss.Length; s++)
+                                        for (int s = ss.Length - 1; s > -1; s--)
                                         {
-                                            current = domainHandler.RetrieveSubDomain(ss);
-                                            if (last == null)
+                                            current = (last as IRecordRetriever ?? domainHandler).RetrieveSubDomain(ss[s]);
                                                 if (current != null)
-                                                    last = current.AddSubdomain(new Domain(ss[s]));
-                                                else
-                                                    last = domainHandler.AddTLD(new Domain(ss[s]));
+                                            {
+                                                    last = current;
+                                            }
                                             else
-                                                last = last.AddSubdomain(new Domain(ss[s]));
+                                            {
+                                                if (last == null)
+                                                    last = domainHandler.AddTLD(new Domain(ss[s]));
+                                                else
+                                                    last = last.AddSubdomain(new Domain(ss[s]));
+                                            }
                                         }
                                         break;
                                     case 2:
@@ -123,14 +143,46 @@ namespace Testing
                         return "Syntax Error (ADD)";
                     case "del":
                         return "Syntax Error (DEL)";
+                    case "stat":
+                        return $"STATUS: {(udpSock.Connected ? "CONNECTED" : "OFFLINE")}";
+                    case "status":
+                        return $"STATUS: {(udpSock.Connected ? "CONNECTED" : "OFFLINE")}";
+                    case "all":
+                        PrintALLNAMES(domainHandler.Domains.ToArray());
+                        return "";
                 }
             }
             return "Syntax Error";
         }
 
+        static void PrintALLNAMES(params Domain[] domains)
+        {
+            foreach (var a in domains)
+            {
+                Console.WriteLine(a);
+                foreach (var r in a.A_Records)
+                {
+                    Console.WriteLine("\t -> " + r);
+                }
+                foreach (var r in a.AAAA_Records)
+                {
+                    Console.WriteLine("\t -> " + r);
+                }
+                foreach (var r in a.CNAME_Records)
+                {
+                    Console.WriteLine("\t -> " + r);
+                }
+            }
+            foreach (var a in domains)
+            {
+                PrintALLNAMES(a.Subdomains.ToArray());
+            }
+        }
+
         static void UIThread()
         {
             string buffer = "";
+            WriteCharacters(buffer);
             while (true)
             {
                 var key = Console.ReadKey(true);
@@ -146,6 +198,7 @@ namespace Testing
                             ClearCharacters();
                             Console.WriteLine(Environment.MachineName+ ">"+buffer);
                             Console.WriteLine(Execute(buffer));
+                            WriteCharacters("");
                         }
                         buffer = "";
                         break;
@@ -185,7 +238,13 @@ namespace Testing
 
         static void DoThing()
         {
-            var parsed = Parser.Parse(Recieve());
+            DateTime start;
+            TimeSpan recieving;
+            TimeSpan answering;
+            TimeSpan sending;
+            DateTime end;
+            start = DateTime.Now;
+            var parsed = Parser.Parse(Recieve(ref start,out recieving));
 
             List<Answer> answers = new List<Answer>();
 
@@ -217,6 +276,7 @@ namespace Testing
                     }
                 }
             }
+            answering = DateTime.Now.Subtract(start);
 
             replyCodeBuilder.answers = (ushort)answers.Count;
             replyCodeBuilder.questions = parsed.QuestionCount;
@@ -230,7 +290,133 @@ namespace Testing
             HeaderBuilder headerBuilder = new HeaderBuilder(replyCodeBuilder);
             headerBuilder.id = parsed.Id;
             DnsMessage dnsMessage = new DnsMessage(headerBuilder) { Answers = answers.ToArray(), Questions = parsed.Questions };
+            sending = DateTime.Now.Subtract(start);
             udpSock.SendTo(Serializer.Serialize(dnsMessage), _groupEp);
+            end = DateTime.Now;
+            ShowWaterfall(start, end, new KeyValuePair<string, TimeSpan>[] { new KeyValuePair<string, TimeSpan>("Recieving", recieving), new KeyValuePair<string, TimeSpan>("Answering", answering), new KeyValuePair<string, TimeSpan>("Sending", sending) });
+            
+        }
+
+        static void ShowWaterfall(DateTime start, DateTime end, params KeyValuePair<string, TimeSpan>[] timeSpans)
+        {
+            TimeSpan starttofinish = end.Subtract(start);
+            int time;
+            TimeSpan ss = new TimeSpan(timeSpans.Select(n => n.Value).Max(n => n.Ticks));
+            float chunk;
+            if (ss.Hours > 1)
+            {
+                time = timeSpans.Max(n => n.Value.Hours);
+                chunk = 31.0f / ss.Hours;
+                Console.WriteLine($"Resolution over {time} hour(s)");
+                foreach (var a in timeSpans)
+                {
+                    PrintWF(a.Key, Math.Ceiling(a.Value.Hours * chunk)); Console.WriteLine(" " + a.Value.Hours + " hours");
+                }
+            }
+            else if (ss.Minutes > 1)
+            {
+                time = timeSpans.Select(n => n.Value.Minutes).Max();
+                chunk = 31.0f / ss.Minutes;
+                Console.WriteLine($"Resolution over {time} minute(s)");
+                foreach (var a in timeSpans)
+                {
+                    PrintWF(a.Key, Math.Ceiling(a.Value.Minutes * chunk)); Console.WriteLine(" " + a.Value.Minutes + " minutes");
+                }
+            }
+            else if (ss.Seconds > 1)
+            {
+                time = timeSpans.Select(n => n.Value.Seconds).Max();
+                chunk = 31.0f / ss.Seconds;
+                Console.WriteLine($"Resolution over {time} second(s)");
+                foreach (var a in timeSpans)
+                {
+                    PrintWF(a.Key, Math.Ceiling(a.Value.Seconds * chunk)); Console.WriteLine(" " + a.Value.Seconds + " seconds");
+                }
+            }
+            else if (ss.Milliseconds > 1)
+            {
+                time = timeSpans.Select(n => n.Value.Milliseconds).Max();
+                chunk = 31.0f / ss.Milliseconds;
+                Console.WriteLine($"Resolution over {time} millisecond(s)");
+                foreach (var a in timeSpans)
+                {
+                    PrintWF(a.Key, Math.Ceiling(a.Value.Milliseconds * chunk)); Console.WriteLine(" " + a.Value.Milliseconds + " milliseconds");
+                }
+            }
+            else
+            {
+                time = (int)(timeSpans.Select(n => n.Value.Ticks).Max());
+                if (time == 0) time = 1;
+                chunk = 31.0f / time;
+                Console.WriteLine($"Resolution over {time} tick(s)");
+                foreach (var a in timeSpans)
+                {
+                    PrintWF(a.Key, Math.Ceiling(a.Value.Ticks * chunk) - 0.00001f); Console.WriteLine(" " + a.Value.Ticks + " ticks");
+                }
+            }
+        }
+
+        //static void ShowWaterfall(DateTime start, DateTime end, params KeyValuePair<string, TimeSpan>[] timeSpans)
+        //{
+        //    TimeSpan starttofinish = end.Subtract(start);
+        //    int time;
+        //    float chunk;
+        //    if (starttofinish.Minutes > 1)
+        //    {
+        //        time = starttofinish.Minutes;
+        //        chunk = 30.0f / time;
+        //        Console.WriteLine($"Resolution over {time} minute(s)");
+        //        foreach (var a in timeSpans)
+        //        {
+        //            PrintWF(a.Key, (int)Math.Ceiling(a.Value.Minutes * chunk)); Console.WriteLine(" " + a.Value.Minutes + " minutes");
+        //        }
+        //    } else if(starttofinish.Seconds > 1)
+        //    {
+        //        time = starttofinish.Seconds;
+        //        chunk = 30.0f / time;
+        //        Console.WriteLine($"Resolution over {time} second(s)");
+        //        foreach (var a in timeSpans)
+        //        {
+        //            PrintWF(a.Key, (int)Math.Ceiling(a.Value.Seconds * chunk)); Console.WriteLine(" " + a.Value.Seconds + " seconds");
+        //        }
+        //    } else if (starttofinish.Milliseconds > 1)
+        //    {
+        //        time = starttofinish.Milliseconds;
+        //        chunk = 30.0f / time;
+        //        Console.WriteLine($"Resolution over {time} millisecond(s)");
+        //        foreach (var a in timeSpans)
+        //        {
+        //            PrintWF(a.Key, (int)Math.Ceiling(a.Value.Milliseconds * chunk)); Console.WriteLine(" " + a.Value.Milliseconds + " milliseconds");
+        //        }
+        //    } else
+        //    {
+        //        time = ((int)starttofinish.Ticks);
+        //        if (time == 0) time = 1;
+        //        chunk = 30.0f / time;
+        //        Console.WriteLine($"Resolution over {time} tick(s)");
+        //        foreach (var a in timeSpans)
+        //        {
+        //            PrintWF(a.Key, (int)Math.Ceiling(a.Value.Ticks * chunk)); Console.WriteLine(" " + a.Value.Ticks + " ticks");
+        //        }
+        //    }
+        //}
+
+        static void PrintWF(string what, double chars)
+        {
+            char[] toprint;
+            toprint = ((what+="         ").Take(10)).ToArray();
+            Console.Write(toprint);
+            Console.Write('|');
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            for (int i = 0; i < chars; i++)
+                Console.Write('-');
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.Write('>');
+            Console.ForegroundColor = ConsoleColor.Gray;
+            for (double i = chars; i < 31; i++)
+                Console.Write(' ');
+            Console.Write('|');
+
         }
 
         static private byte[] Recieve()
@@ -244,6 +430,21 @@ namespace Testing
                         return toReturn;
                 }
                 //System.Threading.Thread.Sleep(10);
+            }
+        }
+        static private byte[] Recieve(ref DateTime start, out TimeSpan recieved)
+        {
+            while (true)
+            {
+                if (udpSock.Available > 0)
+                {
+                    start = DateTime.Now;
+                    byte[] toReturn = new byte[udpSock.Available];
+                    udpSock.ReceiveFrom(toReturn, ref _groupEp);
+                    recieved = DateTime.Now.Subtract(start);
+                    return toReturn;
+                }
+                System.Threading.Thread.Sleep(10);
             }
         }
         static void Benchmark(int repetitions)

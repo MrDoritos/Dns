@@ -17,7 +17,7 @@ namespace DNS.Messages.Components
             return lastDomain;
         }
      */
-    public class Domain : Record
+    public class Domain : Record, IRecordRetriever
     {
         public byte[] RawName;
         public string Name { get => Encoding.ASCII.GetString(RawName); }
@@ -68,6 +68,11 @@ namespace DNS.Messages.Components
         public IEnumerable<Domain> GetDomains(IEnumerable<Domain> selecteddomains, byte domain, int index)
         {
             return selecteddomains.Where(n => n.RawName.Length < index && n.RawName[index] == domain);
+        }
+
+        public override string ToString()
+        {
+            return FQDN;
         }
     }
 }

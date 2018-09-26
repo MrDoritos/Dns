@@ -4,24 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DNS.Messages.Components;
+using DNS.Messages;
 
 namespace DNS.Messages.Records
 {
-    public class A : BaseOfBaseRecord, IRecord
+    public class AAAA : BaseOfBaseRecord, IRecord
     {
-        public A(byte[] record) :base (Types.A, 500) { Record = record; }
-        /// <summary>
-        /// Create an A record
-        /// </summary>
-        /// <param name="record">The 4 byte record</param>
-        /// <param name="TTL">The time to live</param>
-        public A(byte[] record, uint TTL):base(Types.A, TTL) { Record = record; }
-        public byte[] Record { get; }
-        public byte[] Bytes { get => Record; }
+        public AAAA(byte[] bytes) : base(Types.AAAA) { Bytes = bytes; }
+        public AAAA(byte[] bytes, uint TTL) : base(Types.AAAA, TTL) { Bytes = bytes; }
+        
+        public byte[] Bytes { get; }
 
         public byte[] Serialize()
         {
-            byte[] rcd = new byte[14];
+            byte[] rcd = new byte[26];
             rcd[0] = (byte)((int)(Type) << 8);
             rcd[1] = (byte)((int)(Type));
             rcd[2] = (byte)((int)(Class) << 8);
@@ -31,11 +27,9 @@ namespace DNS.Messages.Records
             rcd[6] = (byte)(TTL >> 8);
             rcd[7] = (byte)(TTL);
             rcd[8] = 0;
-            rcd[9] = 4;
-            rcd[10] = Record[0];
-            rcd[11] = Record[1];
-            rcd[12] = Record[2];
-            rcd[13] = Record[3];
+            rcd[9] = 16;
+            for (int i = 0, r = 10; i < 16; i++, r++)
+                rcd[r] = Bytes[i];
             return rcd;
         }
 
@@ -46,7 +40,7 @@ namespace DNS.Messages.Records
 
         public override string ToString()
         {
-            return $"{Record[0]}.{Record[1]}.{Record[2]}.{Record[3]}";
+            return BitConverter.ToString(Bytes, 0, 16);
         }
     }
 }

@@ -9,7 +9,7 @@ using DNS.Messages.Components;
 
 namespace DNS
 {
-    public class DomainHandler
+    public class DomainHandler : IRecordRetriever
     {
         private List<Domain> domains;
         public IReadOnlyList<Domain> Domains { get => domains; }

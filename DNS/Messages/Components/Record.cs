@@ -13,6 +13,8 @@ namespace DNS.Messages.Components
         public Record() { }
 
         public List<A> A_Records = new List<A>();
+        public List<AAAA> AAAA_Records = new List<AAAA>();
+        public List<CNAME> CNAME_Records = new List<CNAME>();
 
         public Answer[] GetAnswers(Question question)
         {
@@ -21,11 +23,17 @@ namespace DNS.Messages.Components
             {
                 case BaseRecord.Types.A:
                     foreach (var a in A_Records)
-                        answers.Add(new Answer(question.QNAME,a));
+                        answers.Add(new Answer(question.QNAME, a));
+                    break;
+                case BaseRecord.Types.AAAA:
+                    foreach (var a in AAAA_Records)
+                        answers.Add(new Answer(question.QNAME, a));
                     break;
                 default:
                     break;
             }
+            foreach (var a in CNAME_Records)
+                answers.Add(new Answer(question.QNAME, a));
             return answers.ToArray();
         }
     }
