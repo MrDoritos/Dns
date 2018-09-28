@@ -17,6 +17,7 @@ namespace DNS.Messages.Components
         public byte[] FQDN { get; }
         public string StringFQDN { get => Encoding.ASCII.GetString(FQDN); }
 
+
         public byte[] Serialize()
         {
             return (Combine(FQDN, a.Serialize()));

@@ -181,6 +181,8 @@ namespace Testing
 
         static void UIThread()
         {
+            List<string> cmdBuffer = new List<string>();
+            int bufindex = 0;
             string buffer = "";
             WriteCharacters(buffer);
             while (true)
@@ -196,11 +198,37 @@ namespace Testing
                         if (buffer.Length > 0)
                         {
                             ClearCharacters();
+                            cmdBuffer.Add(buffer);
+                            bufindex = cmdBuffer.Count;
                             Console.WriteLine(Environment.MachineName+ ">"+buffer);
                             Console.WriteLine(Execute(buffer));
                             WriteCharacters("");
                         }
                         buffer = "";
+                        break;
+                    case ConsoleKey.UpArrow:
+                        if (bufindex > 0)
+                        {
+                            bufindex--;
+                            ClearCharacters();
+                            WriteCharacters(cmdBuffer[bufindex]);
+                            buffer = cmdBuffer[bufindex];
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (bufindex < cmdBuffer.Count)
+                        {
+                            ClearCharacters();
+                            buffer = cmdBuffer[bufindex];
+                            WriteCharacters(buffer);
+                            bufindex++;
+                        }
+                        else
+                        {
+                            buffer = "";
+                            ClearCharacters();
+                            WriteCharacters(buffer);                            
+                        }
                         break;
                     default:
                         if (buffer.Length < Console.WindowWidth - 1)
@@ -220,7 +248,10 @@ namespace Testing
             int bottom = Console.WindowHeight + Console.WindowTop - 1;
             int last = Console.CursorTop;
             Console.SetCursorPosition(0, bottom);
-            Console.Write(Environment.MachineName + ">" + buffer + " ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(Environment.MachineName + ">");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(buffer + " ");
             Console.SetCursorPosition(0, last);
         }
 
@@ -240,60 +271,69 @@ namespace Testing
         {
             DateTime start;
             TimeSpan recieving;
+            TimeSpan parsing;
             TimeSpan answering;
             TimeSpan sending;
             DateTime end;
             start = DateTime.Now;
             var parsed = Parser.Parse(Recieve(ref start,out recieving));
-
+            parsing = DateTime.Now.Subtract(start);
             List<Answer> answers = new List<Answer>();
 
-            ReplyCodeBuilder replyCodeBuilder = new ReplyCodeBuilder();
-            foreach (var question in parsed.Questions)
+            ReplyCodeBuilder replyCodeBuilder = new ReplyCodeBuilder
             {
-                var ams = domainHandler.RetrieveSubDomain(question.RawBytes);
-                Answer[] answerss = new Answer[0];
-                if (ams != null)
-                    answerss = ams.GetAnswers(question);
-                if (ams == null)
+                isQuery = false,
+                recursionAvailable = false,
+                recursionDesired = false,
+                truncation = false,
+                authorities = 0,
+                authoritativeAnswer = true,
+                additional = 0,
+            };
+            if (parsed.OpCode == Header.OpCodes.IQUERY)
+            {
+                replyCodeBuilder.responseCode = Header.ResponseCodes.SERVERFAILURE;
+            }
+            else
+            {
+                foreach (var question in parsed.Questions)
                 {
-                    Console.WriteLine($"{question.Raw} {question.Type} {question.Class} -> Name not found");
-                    replyCodeBuilder.responseCode = Header.ResponseCodes.NAMEERROR;
-                }
-                else
-                {
-                    if (answerss.Length < 1)
+                    var ams = domainHandler.RetrieveSubDomain(question.RawBytes);
+                    Answer[] answerss = new Answer[0];
+                    if (ams != null)
+                        answerss = ams.GetAnswers(question);
+                    if (ams == null)
                     {
-                        Console.WriteLine($"{question.Raw} {question.Type} {question.Class} -> No records found");                        
+                        Console.WriteLine($"{question.Raw} {question.Type} {question.Class} -> Name not found");
+                        replyCodeBuilder.responseCode = Header.ResponseCodes.NAMEERROR;
                     }
                     else
                     {
-                        Console.WriteLine($"{question.Raw} {question.Type} {question.Class} -> {ams.FQDN}");
-                        replyCodeBuilder.responseCode = Header.ResponseCodes.NOERROR;
-                        answers.AddRange(answerss);
-                        foreach (var a in answerss)
-                            Console.WriteLine($"\t{a.StringFQDN} -> {a.a}");
+                        if (answerss.Length < 1)
+                        {
+                            Console.WriteLine($"{question.Raw} {question.Type} {question.Class} -> No records found");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{question.Raw} {question.Type} {question.Class} -> {ams.FQDN}");
+                            replyCodeBuilder.responseCode = Header.ResponseCodes.NOERROR;
+                            answers.AddRange(answerss);
+                            foreach (var a in answerss)
+                                Console.WriteLine($"\t{question.Raw} -> {a.a}");
+                        }
                     }
                 }
             }
             answering = DateTime.Now.Subtract(start);
-
             replyCodeBuilder.answers = (ushort)answers.Count;
             replyCodeBuilder.questions = parsed.QuestionCount;
-            replyCodeBuilder.isQuery = false;
-            replyCodeBuilder.recursionAvailable = false;
-            replyCodeBuilder.recursionDesired = false;
-            replyCodeBuilder.truncation = false;
-            replyCodeBuilder.authorities = 0;
-            replyCodeBuilder.authoritativeAnswer = true;
-            replyCodeBuilder.additional = 0;
             HeaderBuilder headerBuilder = new HeaderBuilder(replyCodeBuilder);
             headerBuilder.id = parsed.Id;
             DnsMessage dnsMessage = new DnsMessage(headerBuilder) { Answers = answers.ToArray(), Questions = parsed.Questions };
             sending = DateTime.Now.Subtract(start);
             udpSock.SendTo(Serializer.Serialize(dnsMessage), _groupEp);
             end = DateTime.Now;
-            ShowWaterfall(start, end, new KeyValuePair<string, TimeSpan>[] { new KeyValuePair<string, TimeSpan>("Recieving", recieving), new KeyValuePair<string, TimeSpan>("Answering", answering), new KeyValuePair<string, TimeSpan>("Sending", sending) });
+            ShowWaterfall(start, end, new KeyValuePair<string, TimeSpan>[] { new KeyValuePair<string, TimeSpan>("Recieving", recieving),new KeyValuePair<string, TimeSpan>("Parsing", parsing) , new KeyValuePair<string, TimeSpan>("Answering", answering), new KeyValuePair<string, TimeSpan>("Sending", sending) });
             
         }
 
