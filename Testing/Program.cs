@@ -60,6 +60,27 @@ namespace Testing
             }
         }
 
+        //static Answer[] IQuery(params Question[] questions)
+        //{
+        //    List<Answer> answers = new List<Answer>();
+        //    foreach (var question in questions)
+        //    {
+        //        var dom = GetDomain(question);
+        //        switch (question.Type)
+        //        {
+        //            case BaseRecord.Types.A:
+        //                foreach (var a in )
+        //            case BaseRecord.Types.AAAA:
+        //                answers.Add(new Answer(BaseRecord.Types.AAAA, ));
+        //        }
+        //    }
+        //}
+
+        static Domain GetDomain(Question question)
+        {
+            return domainHandler.RetrieveSubDomain(question.RawBytes);
+        }
+
         static void WaterFaller()
         {
             for (int i = 1; i < 100000; i+=1)
