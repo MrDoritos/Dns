@@ -1,0 +1,17 @@
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.csprojAssemblyReference.cache
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.csproj.CoreCompileInputs.cache
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.AssemblyInfoInputs.cache
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.AssemblyInfo.cs
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\libhostpolicy.so
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\libhostfxr.so
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.deps.json
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.runtimeconfig.json
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.runtimeconfig.dev.json
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.dll
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.pdb
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNS.dll
+C:\Users\Ian\source\repos\DNS\DNSnetcore\bin\Debug\netcoreapp2.0\ubuntu-x64\DNS.pdb
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.csproj.CopyComplete
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.dll
+C:\Users\Ian\source\repos\DNS\DNSnetcore\obj\Debug\netcoreapp2.0\ubuntu-x64\DNSnetcore.pdb
